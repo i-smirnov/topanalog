@@ -1,9 +1,9 @@
 CFLAGS=-Wall -g
 
 all: 	clean
-prog:
+topc:
 	g++ topc.cpp -o topc
-
+	
 clean:
 	rm -f topc
 

@@ -20,6 +20,18 @@ int action(const char *path, const struct stat *st, int flags)
 //----------------
 
 
+		void prnt(char *buf,char *str)
+		{
+		 char *pt,a;
+		 int i=strlen(str),l=i;
+		 pt=strstr(buf,str);
+		 a=pt[i];
+		 while (pt[i]!='\n'){printf("%c",pt[i]);i+=1;}	
+		 
+		 if (isdigit(a)) printf("\t");
+		 else if (i<(l+8)) printf("\t\t\t");
+		 else printf("\t\t");
+		}	
 
 int main()
 {
@@ -27,7 +39,7 @@ int main()
   mode_t filePerms;
   ssize_t numWrite,numRead;
   char charr[]="Try to write this.\n";
-  char buff[50];
+  char buff[1024]="";
 
   openFlags = O_CREAT | O_WRONLY | O_TRUNC;
   filePerms = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |S_IROTH | S_IWOTH;
@@ -44,21 +56,22 @@ int main()
   };
 
 int ppp=0;
-char vbnm[4]="/";
-char lkj[8]="qwe";
-string str1;
-//strcat(vbnm,lkj);
-//string filename="/";
 char filename[20]="/proc/";
 const char pr[20]="/proc/";
 char ad[6]="";
+char *ln;
+char pid[]="Pid:\t";
+char name[]="Name:\t";
+char state[]="State:\t";
+
+
   while( (entry = readdir(dir))!=NULL )
   {
      if (isdigit(entry->d_name[0])) 
      { 
 	for(int l=0;l<20;l++) filename[l]=pr[l]; //reset filename value
 	strcat(filename,entry->d_name);	
-	printf("filename=%s \n",filename);
+//-	printf("filename=%s \n",filename);
 	piddir=opendir(filename);
   	if (!piddir)
 	{
@@ -66,17 +79,37 @@ char ad[6]="";
      		return(1);	
   	};
 	
-     	if (ppp==3) //without this if we can't open EVERY status 
-	{
+    // 	if (ppp==3) //without this if we can't open EVERY status 
+//	{
 		
 
 		strcat(filename,"/status");
-		printf("filename=%s \n",filename);
+//-		printf("filename=%s \n",filename);
      		
 		ifd=open(filename, O_RDONLY);
 		if (ifd ==-1) printf("error opening input file\n");
-  		numRead = read(ifd, buff, 20);
-		printf("buff= %s\n",buff);
+  		
+//-		int z=0;
+/*
+		do// while (buff[z-1]!='\0')
+		{
+			printf("z=%d\n",z);
+			numRead = read(ifd, &buff[z], 1);
+			z+=1;
+		} while (buff[z-1]!='\n');
+*/
+		numRead=read(ifd,buff,1024);
+		
+		
+//		void prnt(char *buf,char *str,char *pt)
+		
+//		printf("buff= %s\n",buff);
+	//	ln=strstr(buff,"Pid:\t");
+	//	while(ln[z+strlen("Pid:\t")]!='\n') { printf("%c",ln[z+5]); z+=1;}
+		prnt(buff,pid);	
+		prnt(buff,name);
+		prnt(buff,state);
+		printf("\n");	
 /*		ofd=open("outfile.txt",openFlags,filePerms); 
   		if (ofd == -1) printf("err opening output file\n");
  
@@ -89,18 +122,14 @@ char ad[6]="";
     		}*/
 		close(ifd);
 		//close(ofd);
- 	}
-     	ppp+=1;
+ //	}
+   //  	ppp+=1;
 	closedir(piddir);
      }
   }
-printf("vbnm= %s\n",lkj);
+
  
-//  string filename="/"+(entry->d_name)+"/status";
-//  string filename="/";
-//  filename.append(entry->d_name);
-//  strcat(filename,entry->d_name);
-  cout<<"filename="<<filename<<endl;
+ // cout<<"filename="<<filename<<endl;
   closedir(dir);
   
 
